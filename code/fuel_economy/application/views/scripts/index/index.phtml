@@ -1,0 +1,153 @@
+<?php
+
+/**
+ * This funcion calculates the trip cost based on the values in an
+ * Application_Model_Entry object.
+ */
+function getTCost($entry) {
+
+    if( !$entry instanceof Application_Model_Entry )
+        return 0;
+
+    $cost = 0;
+
+    // calculate the cost and round to the nearest 2 decimal places.
+    if( (int) $entry->getMpg() > 0 ) {
+        $cost = $entry->getCost() * ((int) $entry->getMiles() / (int) $entry->getMpg());
+        $cost = round($cost, 2);
+    }
+
+    return $cost;
+}
+
+?>
+
+<script type="text/javascript">
+<!--
+
+var showform = <?php echo ($this->selectedentry === null) ? 0 : 1; ?>;
+
+$(document).ready(function() {
+
+    /*
+     * make the form visible to the user.
+     */
+    if( showform == 1 ) {
+        $("div#detail").show();
+    }
+
+    /*
+     * general ajax configuration options
+     */
+    $.ajaxSetup ({
+        cache: false
+    });
+
+    /*
+     * This function handles a single click on a row in the table
+     */
+    $("tr.row-item").click(function() {
+        // this statement finds the first <td> tag within the selected <tr>
+        // that has a class of 'row-item-id', then finds the first <span> tag
+        // which contains the id of the element that was selected.
+        var element = $(this).children('td.row-item-id');
+
+        var id = parseInt($(element).text());
+
+        if( id > 0 ) {
+            $.ajax({
+                url: "index/get-data",
+                data: "id=" + id,
+                success: function(data) {
+
+                             var miles, fuelcost, mpg;
+                             var tcost = [];
+
+                             miles = parseInt(data.miles);
+                             fuelcost = parseFloat(data.fuelcost);
+                             mpg = parseInt(data.mpg);
+
+                             // total cost of fuel
+                             tcost[0] = (miles / mpg) * fuelcost;
+
+                             // cost per passenger for n passengers
+                             tcost[1] = tcost[0] / 2;
+                             tcost[2] = tcost[0] / 3;
+                             tcost[3] = tcost[0] / 4;
+                             //tcost[4] = tcost[0] / 5;
+
+                             // update the trip cost and cost/passenger fields
+                             $("td#cost-pass-0").children("h1").html("$" + tcost[0].toFixed(2));
+                             $("td#cost-pass-1").html("$" + tcost[1].toFixed(2));
+                             $("td#cost-pass-2").html("$" + tcost[2].toFixed(2));
+                             $("td#cost-pass-3").html("$" + tcost[3].toFixed(2));
+
+                             // update form details
+                             $("input#id").attr("value", data.id);
+                             $("input#description").attr("value", data.description);
+                             $("input#drivetime").attr("value", data.drivetime);
+                             $("input#miles").attr("value", miles);
+                             $("input#fuelcost").attr("value", fuelcost.toFixed(2));
+                             $("input#mpg").attr("value", mpg);
+                             $("input#tripid").attr("value", data.id);
+
+                             // make sure form is visible
+                             $("div#detail").show();
+                         },
+                error:   function() {
+                         // handle the error
+                         }
+            });
+        }
+    });
+});
+//-->
+</script>
+
+<div id="detail">
+    <div id="trip-detail"><?php echo $this->form; ?></div>
+    <div id="cost-detail">
+        <table>
+            <?php
+            $tcost = $this->selectedentry !== null ? getTCost($this->selectedentry) : 0;
+            ?>
+            <tr>
+                <td style="width: 200px;"><h1>Total trip cost</h1></td>
+                <td class="cost-pass" id="cost-pass-0"><h1><?php echo sprintf("$%01.2f", $tcost); ?></h1></td>
+            </tr>
+            <tr>
+                <td>1 passenger</td>
+                <td class="cost-pass" id="cost-pass-1"><?php echo sprintf("$%01.2f", $tcost / 2); ?></td>
+            </tr>
+            <tr>
+                <td>2 passengers</td>
+                <td class="cost-pass" id="cost-pass-2"><?php echo sprintf("$%01.2f", $tcost / 3); ?></td>
+            </tr>
+            <tr>
+                <td>3 passengers</td>
+                <td class="cost-pass" id="cost-pass-3"><?php echo sprintf("$%01.2f", $tcost / 4); ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div id="list">
+<table id="items" cellspacing=0>
+<?php
+foreach( $this->entries as $entry ) :
+    // compute the cost so it can be included in the table
+    $cost = getTCost($entry);
+    ?>
+    <tr class="row-item">
+        <td class="row-item-id"><?php echo $entry->getId() ?></td>
+        <td class="row-item-desc"><?php echo $entry->getDescription() ?></td>
+        <td class="row-item-drivetime"><?php echo is_null($entry->getDrivetime()) ? '-' : "~{$entry->getDrivetime()} hours"; ?></td>
+        <td class="row-item-miles"><?php echo "{$entry->getMiles()} miles"; ?></td>
+        <td class="row-item-cost"><?php echo sprintf("$%01.2f/gal", $entry->getCost()); ?></td>
+        <td class="row-item-mpg"><?php echo "{$entry->getMpg()} mpg"; ?></td>
+        <td class="row-item-tripcost"><?php echo sprintf("$%01.2f", $cost); ?></td>
+    </tr>
+<?php endforeach ?>
+</table>
+</div>
+

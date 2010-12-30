@@ -1,0 +1,119 @@
+
+body {
+    font-family:    Helvetica, Arial sans-serif;
+    font-size:      13px;
+}
+
+div {
+    margin:         0 auto;
+    margin-top:     5px;
+    width:          750px;
+}
+
+h1 {
+    margin-top:     5px;
+    margin-bottom:  5px;
+}
+
+div#detail {
+    border:         1px solid gray;
+    height:         150px;
+    display:        none;
+}
+
+div#trip-detail {
+    float:          left;
+    width:          400px;
+    height:         150px;
+}
+
+div#cost-detail {
+    float:          right:
+    height:         150px;
+}
+
+dl.zend_form {
+    margin:         0;
+    height:         150px;
+}
+
+dl.zend_form dt {
+    margin-left:    2px;
+    display:        inline;
+    float:          left;
+    clear:          left;
+
+    width:          125px;
+}
+
+dl.zend_form dd {
+    display:        inline;
+    float:          left;
+}
+
+dd#save-element  {
+    
+}
+
+dt#id-label {
+    display:        none;
+}
+
+div#form-buttons {
+    margin-top:     5px;
+    float:          left;
+}
+
+table#items {
+    border:         1px solid gray;
+    width:          750px;
+}
+
+table#items td {
+    height:         20px;
+}
+
+table#items tr {
+    cursor:         default;
+}
+
+tr.row-item:nth-child(2n+1) {
+    background-color:   #eee;
+}
+
+tr.row-item:hover {
+    background-color:   gray;
+}
+
+.row-item-id {
+    display:        none;
+}
+
+.row-item-desc {
+    padding-left:   2px;
+}
+
+.row-item-drivetime, .row-item-miles, .row-item-cost, .row-item-mpg, .row-item-tripcost {
+    text-align:     right;
+    width:          85px;
+    padding-right:  2px;
+}
+
+.row-item-tripcost {
+    font-weight:     bold;
+}
+
+#table-trip-detail {
+    width:      100%;
+}
+
+.trip-detail-label {
+    text-align:     left;
+    width:          115px;
+    padding-left:   2px;
+}
+
+td.cost-pass {
+    text-align:     right;
+    width:          75px;
+}

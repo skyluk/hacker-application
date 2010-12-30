@@ -1,0 +1,27 @@
+The application I have included stores information about a trip (miles, cost of fuel, fuel economy) and tells a user approximately how much fuel will cost for the trip.
+
+The bulk of the code can be found in:
+
+application/controllers/IndexController.php
+application/views/scripts/index/index.phtml
+application/models (database code)
+
+The configuration file is:
+
+application/configs/application.ini
+
+The application uses the Zend framework (The framework files would normally be in library/ but to save space I did not include them).  The trip details are stored in a MySQL database in a single table that looks like this:
+
+Table entries
+=============
+id, desc, drive_time, miles, cost, mpg
+-------------
+id           INT
+desc         VARCHAR
+drive_time   DECIMAL
+miles        INT
+cost         DOUBLE
+mpg          INT
+
+
+Everything works, but the only working example I have is on my local machine.
